@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import auth
+from app.api.routes import transitions
 
 app = FastAPI(title="Liminal API")
 
@@ -13,6 +14,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/auth")
+app.include_router(transitions.router)
 
 @app.get("/")
 def root():
