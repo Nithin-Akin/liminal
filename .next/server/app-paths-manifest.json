@@ -1,0 +1,8 @@
+{
+  "/page": "app/page.js",
+  "/arc/page": "app/arc/page.js",
+  "/chat/page": "app/chat/page.js",
+  "/community/page": "app/community/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/scout/page": "app/scout/page.js"
+}
