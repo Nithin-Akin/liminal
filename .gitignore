@@ -1,5 +1,9 @@
-{
-  "gitignore": ["node_modules/", ".next/", "out/"]
-}
 node_modules/
 .next/
+.env
+.env.local
+.DS_Store
+__pycache__/
+*.pyc
+venv/
+.venv/
