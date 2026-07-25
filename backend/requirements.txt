@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-supabase
-anthropic
-openai
-python-dotenv
-pydantic

@@ -1,0 +1,21 @@
+{
+  "demo-user": {
+    "name": "Naveen ",
+    "ageRange": "18-24",
+    "genderContext": "",
+    "transitionType": "moving_city",
+    "city": "Bangalore",
+    "locality": "Urban",
+    "destination": "Christ University",
+    "monthlyBudget": 10000,
+    "housingStatus": "Shortlisted PGs",
+    "bankStatus": "Need local account",
+    "simStatus": "SIM sorted",
+    "commuteMode": "Bike",
+    "foodPreference": "Vegetarian",
+    "safetyPriority": "Very high",
+    "supportLevel": "Low local network",
+    "dayOne": "2026-07-24",
+    "intakeNote": ""
+  }
+}

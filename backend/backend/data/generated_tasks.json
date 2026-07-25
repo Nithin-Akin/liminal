@@ -1,0 +1,190 @@
+{
+  "demo-user": {
+    "summary": "Relocation tasks for moving to a new city",
+    "source_policy": "Data selected based on provided profile and destination city",
+    "tasks": [
+      {
+        "id": "find-housing",
+        "category": "Housing",
+        "title": "Shortlist named PGs near Christ University",
+        "priority": 1,
+        "icon": "🏠",
+        "image_url": "https://www.google.com/s2/favicons?domain=stanzaliving.com&sz=128",
+        "why_now": "You need verified stays near Christ University; start with named operators and review checks instead of generic housing categories.",
+        "search_url": "https://www.google.com/search?q=best+PG+near+Christ+University+Urban+Bangalore+reviews+Stanza+Zolo+HelloWorld+Colive",
+        "source_type": "llm-extracted-candidates",
+        "last_checked": "2026-07-24",
+        "comparison_fields": [
+          "lead_type",
+          "area_match",
+          "budget_signal",
+          "review_check",
+          "verification_query"
+        ],
+        "options": [
+          {
+            "name": "Stanza Living near Christ University",
+            "values": {
+              "lead_type": "branded PG/coliving",
+              "area_match": "Check properties around Urban / Christ University",
+              "budget_signal": "verify rent, deposit, meals, lock-in",
+              "review_check": "verify recent Google reviews before visiting",
+              "verification_query": "Stanza Living PG near Christ University Urban Bangalore reviews"
+            },
+            "fit_reason": "usually searchable by property pages and Google reviews"
+          },
+          {
+            "name": "Zolo near Christ University",
+            "values": {
+              "lead_type": "managed PG/coliving",
+              "area_match": "Check properties around Urban / Christ University",
+              "budget_signal": "verify rent, deposit, meals, lock-in",
+              "review_check": "verify recent Google reviews before visiting",
+              "verification_query": "Zolo PG near Christ University Urban Bangalore reviews"
+            },
+            "fit_reason": "good candidate for student and early-career shortlists"
+          },
+          {
+            "name": "HelloWorld near Christ University",
+            "values": {
+              "lead_type": "managed coliving",
+              "area_match": "Check properties around Urban / Christ University",
+              "budget_signal": "verify rent, deposit, meals, lock-in",
+              "review_check": "verify recent Google reviews before visiting",
+              "verification_query": "HelloWorld PG near Christ University Urban Bangalore reviews"
+            },
+            "fit_reason": "worth comparing for amenities and move-in rules"
+          },
+          {
+            "name": "Colive near Christ University",
+            "values": {
+              "lead_type": "coliving operator",
+              "area_match": "Check properties around Urban / Christ University",
+              "budget_signal": "verify rent, deposit, meals, lock-in",
+              "review_check": "verify recent Google reviews before visiting",
+              "verification_query": "Colive PG near Christ University Urban Bangalore reviews"
+            },
+            "fit_reason": "use if properties appear near your commute corridor"
+          }
+        ],
+        "next_action": "Open each lead, reject anything without recent reviews, then call or WhatsApp only the top 2 near Christ University."
+      },
+      {
+        "id": "update-banking",
+        "category": "Banking",
+        "title": "Update banking information for the new city",
+        "priority": 2,
+        "icon": "🏦",
+        "image_url": "https://example.com/bank-favicon.ico",
+        "why_now": "Ensure seamless transactions and account access in the new city",
+        "search_url": null,
+        "source_type": "official",
+        "last_checked": "2026-07-24",
+        "comparison_fields": [
+          "fees",
+          "interest rates",
+          "branch locations"
+        ],
+        "options": [
+          {
+            "name": "Current bank",
+            "values": {
+              "fees": "low",
+              "interest rates": "competitive",
+              "branch locations": "multiple in the new city"
+            },
+            "fit_reason": "Familiarity and existing account"
+          },
+          {
+            "name": "Local bank",
+            "values": {
+              "fees": "varies",
+              "interest rates": "competitive",
+              "branch locations": "conveniently located"
+            },
+            "fit_reason": "Better understanding of local banking regulations"
+          }
+        ],
+        "next_action": "Contact current bank to update account information"
+      },
+      {
+        "id": "get-sim-card",
+        "category": "SIM",
+        "title": "Obtain a local SIM card for mobile connectivity",
+        "priority": 3,
+        "icon": "📱",
+        "image_url": "https://www.google.com/s2/favicons?domain=airtel.in&sz=128",
+        "why_now": "Stay connected with family, friends, and emergency services",
+        "search_url": "https://www.google.com/search?q=sim+card+providers+in+[destination]",
+        "source_type": "search-required",
+        "last_checked": "2026-07-24",
+        "comparison_fields": [
+          "data plans",
+          "coverage",
+          "cost"
+        ],
+        "options": [
+          {
+            "name": "Prepaid SIM card",
+            "values": {
+              "data plans": "varies",
+              "coverage": "nationwide",
+              "cost": "affordable"
+            },
+            "fit_reason": "Flexible and cost-effective option"
+          },
+          {
+            "name": "Postpaid SIM card",
+            "values": {
+              "data plans": "varies",
+              "coverage": "nationwide",
+              "cost": "higher"
+            },
+            "fit_reason": "More features and priority customer support"
+          }
+        ],
+        "next_action": "Research and compare local SIM card providers"
+      },
+      {
+        "id": "plan-commute",
+        "category": "Commute",
+        "title": "Plan daily commute in the new city",
+        "priority": 4,
+        "icon": "🚂",
+        "image_url": "https://www.google.com/s2/favicons?domain=uber.com&sz=128",
+        "why_now": "Ensure timely and affordable transportation to work and daily activities",
+        "search_url": "https://www.google.com/search?q=public+transportation+in+[destination]",
+        "source_type": "search-required",
+        "last_checked": "2026-07-24",
+        "comparison_fields": [
+          "cost",
+          "travel time",
+          "frequency"
+        ],
+        "options": [
+          {
+            "name": "Public transportation",
+            "values": {
+              "cost": "affordable",
+              "travel time": "variable",
+              "frequency": "frequent"
+            },
+            "fit_reason": "Convenient and environmentally friendly option"
+          },
+          {
+            "name": "Ride-hailing services",
+            "values": {
+              "cost": "varies",
+              "travel time": "variable",
+              "frequency": "on-demand"
+            },
+            "fit_reason": "Fast and convenient, but potentially more expensive"
+          }
+        ],
+        "next_action": "Research public transportation options and routes"
+      }
+    ],
+    "generated_at": "2026-07-24",
+    "user_id": "demo-user"
+  }
+}

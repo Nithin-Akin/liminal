@@ -1,0 +1,10 @@
+{
+  "name": "liiminal",
+  "short_name": "liiminal",
+  "description": "AI transition intelligence for moving cities.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020303",
+  "theme_color": "#020303",
+  "icons": []
+}
