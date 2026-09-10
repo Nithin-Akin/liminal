@@ -4,21 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AsciiField } from "@/components/AsciiField";
 
-const appLinks = [
-  ["Dashboard", "/dashboard", "Command center"],
-  ["Tasks", "/tasks", "Local leads"],
-  ["Check-in", "/check-in", "Daily gate"],
-  ["Mind", "/mental-health", "Load plan"],
-  ["Ask AI", "/assistant", "Agent"],
-  ["Rewards", "/rewards", "Progress"],
-];
+const groups: Array<[string, Array<[string, string]>]> = [["Workspace", [["Dashboard", "/dashboard"], ["Daily", "/daily"], ["Tasks", "/tasks"]]], ["Research", [["Housing", "/research/housing"], ["Banking", "/banking"], ["Connectivity", "/research/connectivity"], ["Healthcare", "/research/healthcare"], ["Food", "/research/food"]]], ["Assistant", [["Ask AI", "/assistant"], ["Rewards", "/rewards"]]]];
 
 export function AppChrome({
   children,
   app = false,
+  hideNav = false,
 }: {
   children: React.ReactNode;
   app?: boolean;
+  hideNav?: boolean;
 }) {
   const pathname = usePathname();
 
@@ -29,7 +24,7 @@ export function AppChrome({
       <div className="corner tr">I</div>
       <div className="corner bl">L</div>
       <div className="corner br">Y</div>
-      <header className={app ? "topbar app-nav" : "topbar home-nav"}>
+      {!hideNav ? <header className={app ? "topbar app-nav" : "topbar home-nav"}>
         <Link className="brand" href="/">
           <span className="brand-mark"><img src="/liminal-logo.png" alt="" /></span>
           <span>
@@ -39,16 +34,7 @@ export function AppChrome({
         </Link>
         <nav className="menu navlinks" aria-label="Primary navigation">
           {app ? (
-            appLinks.map(([label, href, helper]) => (
-              <Link
-                className={pathname === href ? "active" : ""}
-                key={`${label}-${href}`}
-                href={href}
-              >
-                <span>{label}</span>
-                <small>{helper}</small>
-              </Link>
-            ))
+            <><Link className={pathname === "/dashboard" ? "active nav-primary" : "nav-primary"} href="/dashboard"><span>Dashboard</span><small>Current state</small></Link>{groups.slice(1).map(([label, items]) => <details className="nav-group" key={label}><summary>{label}</summary><div className="nav-menu">{items.map(([item, href]) => <Link className={pathname === href ? "active" : ""} key={href} href={href}>{item}</Link>)}</div></details>)}</>
           ) : null}
         </nav>
         {app ? (
@@ -61,7 +47,7 @@ export function AppChrome({
         ) : (
           <div className="navdots" aria-hidden="true"><span /><span /><span /><span /><span /></div>
         )}
-      </header>
+      </header> : null}
       {children}
     </main>
   );

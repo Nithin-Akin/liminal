@@ -104,6 +104,7 @@ export default function OnboardingPage() {
               <label className="field"><span className="label">City</span><input className="input" required value={profile.city} onChange={(e) => update("city", e.target.value)} /></label>
               <label className="field"><span className="label">Locality</span><input className="input" required value={profile.locality} onChange={(e) => update("locality", e.target.value)} /></label>
               <label className="field"><span className="label">Work / college target</span><input className="input" required value={profile.destination} onChange={(e) => update("destination", e.target.value)} /></label>
+              <label className="field full"><span className="label">Destination address (optional but recommended)</span><input className="input" value={profile.destinationAddress} placeholder="Paste the full university/work address" onChange={(e) => update("destinationAddress", e.target.value)} /></label>
               <label className="field"><span className="label">Monthly budget</span><input className="input" required min={1} type="number" value={profile.monthlyBudget || ""} onChange={(e) => update("monthlyBudget", Number(e.target.value))} /></label>
               <SelectField label="Housing status" field="housingStatus" value={profile.housingStatus} values={options.housingStatus} onChange={update} />
               <SelectField label="Banking status" field="bankStatus" value={profile.bankStatus} values={options.bankStatus} onChange={update} />

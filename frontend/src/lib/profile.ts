@@ -8,6 +8,7 @@ export const defaultProfile: UserProfile = {
   city: "",
   locality: "",
   destination: "",
+  destinationAddress: "",
   monthlyBudget: 0,
   housingStatus: "",
   bankStatus: "",

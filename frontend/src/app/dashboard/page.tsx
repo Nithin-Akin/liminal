@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppChrome } from "@/components/AppChrome";
 import { AuthGate } from "@/components/AuthGate";
-import { getDashboard, type DashboardState } from "@/lib/api";
+import { getCheckinHistory, getDashboard, type DashboardState } from "@/lib/api";
 import { phases } from "@/lib/profile";
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState<DashboardState | null>(null);
   const [status, setStatus] = useState("Loading agent dashboard...");
+  const [moods, setMoods] = useState<Array<{ mood?: number; created_at?: string }>>([]);
 
   useEffect(() => {
     async function load() {
@@ -17,6 +18,7 @@ export default function DashboardPage() {
         const payload = await getDashboard();
         setDashboard(payload);
         setStatus("Fetched from agent state");
+        getCheckinHistory().then((history) => setMoods(history.entries.slice(-7))).catch(() => undefined);
       } catch (error) {
         setStatus(error instanceof Error ? error.message : "Could not load dashboard.");
       }
@@ -45,6 +47,7 @@ export default function DashboardPage() {
         {dashboard && profile?.name ? (
           <>
           <p className="hero-copy compact-copy">Current blockers: {dashboard.pending_priority_areas.join(", ") || "none logged yet"}. Setup is {progress}% complete from saved task and reward state.</p>
+          {profile.monthlyBudget < 15000 ? <div className="budget-alert"><strong>Budget check:</strong> Your monthly budget is ₹{profile.monthlyBudget.toLocaleString()}. Avoid using credit to cover recurring housing costs unless repayment is already certain; first compare lower-cost options and total move-in costs.</div> : null}
           <div className="progress-strip">
             <span>Profile</span><b style={{ width: "100%" }} />
             <span>Tasks</span><b style={{ width: `${progress}%` }} />
@@ -81,6 +84,7 @@ export default function DashboardPage() {
                 </div>
               ))}
             </aside>
+            <article className="template-card wide-card mood-trend"><div className="kicker">Mood signal · last 7 check-ins</div>{moods.length ? <div className="mood-bars">{moods.map((entry, index) => <div className="mood-bar" key={`${entry.created_at}-${index}`}><span style={{ height: `${Math.max(12, (entry.mood ?? 0) * 20)}%` }} /><small>{entry.mood ?? "-"}</small></div>)}</div> : <p className="source">Complete check-ins to establish a trend. This is a signal, not a diagnosis.</p>}</article>
           </div>
           <div className="actions">
             <Link className="btn primary" href="/tasks">Open action board</Link>

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCheckinStatus } from "@/lib/api";
+import { getUserId } from "@/lib/api";
 
-const openRoutes = new Set(["/", "/onboarding", "/check-in"]);
+const openRoutes = new Set(["/", "/login"]);
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -21,20 +21,11 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    setChecking(true);
-    getCheckinStatus()
-      .then((status) => {
-        if (!live) return;
-        setAllowed(status.checked_in);
-        setChecking(false);
-        if (!status.checked_in) router.replace("/check-in");
-      })
-      .catch(() => {
-        if (!live) return;
-        setAllowed(false);
-        setChecking(false);
-        router.replace("/check-in");
-      });
+    const authenticated = Boolean(window.localStorage.getItem("liiminal.access_token") && getUserId());
+    if (!live) return;
+    setAllowed(authenticated);
+    setChecking(false);
+    if (!authenticated) router.replace("/login");
 
     return () => {
       live = false;

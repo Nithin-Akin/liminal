@@ -1,51 +1,18 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppChrome } from "@/components/AppChrome";
 import { AuthGate } from "@/components/AuthGate";
-import { getRewards, type RewardsState } from "@/lib/api";
+import { getRewards, redeemReward, type RewardsState } from "@/lib/api";
+
+const options = [["Slow morning", "Protect one morning for rest, coffee, or a walk.", 80], ["Local meal", "Try one place in your new neighbourhood within budget.", 120], ["Move reset", "Take an evening off from relocation admin.", 160], ["Explore pass", "Set aside time and money for one small local experience.", 240]] as const;
 
 export default function RewardsPage() {
   const [rewards, setRewards] = useState<RewardsState | null>(null);
-  const [status, setStatus] = useState("Loading rewards from agent state...");
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getRewards();
-        setRewards(data);
-        setStatus("Fetched from agent state");
-      } catch (error) {
-        setStatus(error instanceof Error ? error.message : "Could not load rewards.");
-      }
-    }
-    load();
-  }, []);
-
-  return (
-    <AuthGate>
-      <AppChrome app>
-        <section className="section grid-two">
-          <div>
-            <div className="kicker">Rewards</div>
-            <h1 className="serif section-title">{rewards?.level ?? "No rewards yet"}</h1>
-            <p className="hero-copy">Rewards measure operational progress: check-ins, completed setup actions, and streaks. No vanity badges for doing nothing.</p>
-            <div className="actions"><Link className="btn primary" href="/tasks">Complete actions</Link></div>
-          </div>
-          {rewards ? (
-            <div className="panel panel-pad cards">
-              {[["Points", rewards.points], ["Streak", `${rewards.streak} days`], ["Completed tasks", rewards.completed_tasks]].map(([label, value]) => (
-                <div className="phase-card" key={label}><div className="kicker">{label}</div><h3>{value}</h3></div>
-              ))}
-            </div>
-          ) : (
-            <div className="template-card empty-state">
-              <p>{status}</p>
-            </div>
-          )}
-        </section>
-      </AppChrome>
-    </AuthGate>
-  );
+  const [status, setStatus] = useState("Loading your progress...");
+  const [custom, setCustom] = useState("");
+  const [customCost, setCustomCost] = useState("120");
+  useEffect(() => { getRewards().then(data => { setRewards(data); setStatus(""); }).catch(error => setStatus(error instanceof Error ? error.message : "Could not load rewards.")); }, []);
+  async function redeem(title: string, points: number) { try { const data = await redeemReward(title, points); setRewards(data.rewards); setStatus(`${title} added to your plan`); } catch (error) { setStatus(error instanceof Error ? error.message : "Could not choose reward."); } }
+  return <AuthGate><AppChrome app><section className="section template-shell"><div className="kicker">Progress · rewards</div><div className="rewards-heading"><div><h1 className="serif section-title">Make progress feel worth it.</h1><p className="hero-copy compact-copy">Use points to choose a small, realistic promise to yourself. The best reward is one you will actually take.</p></div>{rewards ? <div className="reward-balance"><strong>{rewards.points}</strong><span>points available</span><small>{rewards.streak} day streak · {rewards.completed_tasks} actions completed</small></div> : null}</div><div className="reward-progress"><span style={{ width: `${Math.min(100, ((rewards?.points ?? 0) / 400) * 100)}%` }} /></div><div className="kicker reward-section-label">Choose a reset</div><div className="research-grid reward-grid">{options.map(([title, description, points]) => <article className="template-card reward-card" key={title}><div className="reward-cost">{points} pts</div><h2>{title}</h2><p>{description}</p><button className="btn primary" disabled={!rewards || rewards.points < points} onClick={() => redeem(title, points)}>{rewards && rewards.points >= points ? "Choose reward" : "Keep earning"}</button></article>)}</div><section className="panel panel-pad custom-reward"><div><div className="kicker">Make your own</div><h2>What would make this week feel better?</h2><p className="source">Name a reward that fits your life. Keep it concrete, affordable, and kind.</p></div><div className="form-grid"><label className="field"><span className="label">Your reward</span><input className="input" value={custom} onChange={event => setCustom(event.target.value)} placeholder="One guilt-free afternoon" /></label><label className="field"><span className="label">Point cost</span><input className="input" type="number" min="1" value={customCost} onChange={event => setCustomCost(event.target.value)} /></label></div><button className="btn" disabled={!custom.trim() || !rewards || rewards.points < Number(customCost)} onClick={() => redeem(custom, Number(customCost))}>Choose my reward</button></section><div className="actions"><Link className="btn" href="/tasks">Earn points through actions</Link></div><p className="source">{status}</p></section></AppChrome></AuthGate>;
 }

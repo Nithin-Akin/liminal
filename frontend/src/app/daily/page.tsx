@@ -1,0 +1,15 @@
+"use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { AppChrome } from "@/components/AppChrome";
+import { AuthGate } from "@/components/AuthGate";
+import { getCheckinHistory, submitCheckin, type CheckinResponse } from "@/lib/api";
+import { dayNumber, readProfile } from "@/lib/profile";
+import type { UserProfile } from "@/types/app";
+
+export default function DailyPage() {
+  const [profile, setProfile] = useState<UserProfile | null>(null); const [mood, setMood] = useState(3); const [note, setNote] = useState(""); const [history, setHistory] = useState<CheckinResponse[]>([]); const [status, setStatus] = useState("Your daily state is the input for practical support.");
+  useEffect(() => { setProfile(readProfile()); getCheckinHistory().then((data) => setHistory(data.entries)).catch(() => undefined); }, []);
+  async function submit() { if (!profile) return; setStatus("Saving today's state and generating support..."); try { const result = await submitCheckin({ day_number: dayNumber(profile.dayOne), transition_type: profile.transitionType, mood, note, profile }); setHistory((items) => [...items, result]); setNote(""); setStatus(`Saved for ${result.phase_name}, day ${result.day_number}.`); } catch (error) { setStatus(error instanceof Error ? error.message : "Could not save check-in"); } }
+  return <AuthGate><AppChrome app><section className="section template-shell"><div className="kicker">Daily operating state</div><h1 className="serif section-title">Check in, then reduce the load.</h1><p className="hero-copy compact-copy">One workspace for mood, practical blockers, support, and the next action.</p><div className="daily-layout"><section className="template-card panel-pad"><div className="kicker">Today</div><div className="mood-grid daily-moods">{[1,2,3,4,5].map((value) => <button key={value} className={mood === value ? "btn primary" : "btn"} onClick={() => setMood(value)}>{value}</button>)}</div><label className="field full"><span className="label">What is making today harder?</span><textarea className="input" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Commute, housing, money, sleep, food, loneliness, or anything blocked." /></label><div className="actions"><button className="btn primary" onClick={submit}>Save check-in + get plan</button><Link className="btn" href="/tasks">Open tasks</Link></div><p className="source">{status}</p></section><aside className="template-card panel-pad"><div className="kicker">Recent signal</div>{history.length ? history.slice(-5).reverse().map((entry) => <div className="mini-task" key={`${entry.created_at}-${entry.note}`}><span>{entry.mood ?? "-"}</span><div><strong>{entry.phase_name}</strong><small>{entry.note || "No note"}</small></div></div>) : <p className="source">No check-ins yet. Your first entry establishes a baseline.</p>}<Link className="btn" href="/mental-health">Open detailed support plan</Link></aside></div></section></AppChrome></AuthGate>;
+}

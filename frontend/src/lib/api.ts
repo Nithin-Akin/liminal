@@ -1,13 +1,20 @@
 import type { UserProfile } from "@/types/app";
 
-export const USER_ID = "demo-user";
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+
+export function getUserId() {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem("liiminal.user_id") ?? "";
+}
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...(typeof window !== "undefined" && window.localStorage.getItem("liiminal.access_token")
+        ? { Authorization: `Bearer ${window.localStorage.getItem("liiminal.access_token")}` }
+        : {}),
       ...(init?.headers ?? {}),
     },
   });
@@ -70,32 +77,32 @@ export interface AgentTaskResponse {
 export async function saveProfile(profile: UserProfile) {
   return apiFetch<{ saved: boolean; profile: UserProfile }>("/profiles", {
     method: "POST",
-    body: JSON.stringify({ user_id: USER_ID, profile }),
+    body: JSON.stringify({ profile }),
   });
 }
 
 export async function getDashboard() {
-  return apiFetch<DashboardState>(`/dashboard/${USER_ID}`);
+  return apiFetch<DashboardState>(`/dashboard/${getUserId()}`);
 }
 
 export async function askAgent(question: string, location?: UserProfile["location"]) {
   return apiFetch<AgentAnswer>("/agent/query", {
     method: "POST",
-    body: JSON.stringify({ user_id: USER_ID, question, location: location ?? null }),
+    body: JSON.stringify({ question, location: location ?? null }),
   });
 }
 
 export async function generateTasks(force: boolean, location?: UserProfile["location"]) {
   return apiFetch<AgentTaskResponse>("/tasks/generate", {
     method: "POST",
-    body: JSON.stringify({ user_id: USER_ID, force, location: location ?? null }),
+    body: JSON.stringify({ force, location: location ?? null }),
   });
 }
 
 export async function completeAgentTask(taskId: string) {
   return apiFetch<{ completed: boolean }>("/tasks/complete", {
     method: "POST",
-    body: JSON.stringify({ user_id: USER_ID, task_id: taskId }),
+    body: JSON.stringify({ task_id: taskId }),
   });
 }
 
@@ -107,7 +114,10 @@ export interface RewardsState {
 }
 
 export async function getRewards() {
-  return apiFetch<RewardsState>(`/rewards/${USER_ID}`);
+  return apiFetch<RewardsState>(`/rewards/${getUserId()}`);
+}
+export async function redeemReward(title: string, points: number) {
+  return apiFetch<{ redeemed: boolean; rewards: RewardsState }>("/rewards/redeem", { method: "POST", body: JSON.stringify({ title, points }) });
 }
 
 export interface CheckinResponse {
@@ -129,7 +139,7 @@ export async function submitCheckin(payload: {
 }) {
   return apiFetch<CheckinResponse>("/checkins", {
     method: "POST",
-    body: JSON.stringify({ user_id: USER_ID, ...payload }),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -140,5 +150,46 @@ export interface CheckinStatus {
 }
 
 export async function getCheckinStatus() {
-  return apiFetch<CheckinStatus>(`/checkins/status/${USER_ID}`);
+  return apiFetch<CheckinStatus>(`/checkins/status/${getUserId()}`);
+}
+
+export async function getCheckinHistory() {
+  return apiFetch<{ entries: CheckinResponse[]; count: number }>("/checkins/history");
+}
+
+export async function login(email: string, password: string) {
+  return apiFetch<{ session: { access_token: string }; user: { id: string } }>("/auth/login", {
+    method: "POST", body: JSON.stringify({ email, password }),
+  });
+}
+
+export interface ResearchResult {
+  id: string; name: string; category: string; latitude: number; longitude: number;
+  address: string; phone?: string; website?: string; opening_hours?: string;
+  map_url: string; directions_url: string; source_url: string; source_type: string; retrieved_at: string; rating?: number; review_count?: number; price_level?: string; summary?: string;
+}
+
+export async function researchCategory(category: string, params: Record<string, string | number> = {}) {
+  const query = new URLSearchParams(Object.entries(params).map(([key, value]) => [key, String(value)]));
+  return apiFetch<{ category: string; query: string; source: string; location_label?: string; results: ResearchResult[]; warning?: string; budget_warning?: string; request?: Record<string, unknown> }>(`/research/${category}?${query}`);
+}
+
+export async function verifySource(url: string) {
+  return apiFetch<{ url: string; extraction: { facts: Record<string, string>; confidence: string } }>("/sources/verify", { method: "POST", body: JSON.stringify({ url }) });
+}
+
+export async function confirmSource(url: string, category: string, facts: Record<string, string>, confidence: string) {
+  return apiFetch<{ saved: boolean }>("/sources/confirm", { method: "POST", body: JSON.stringify({ url, category, facts, confidence }) });
+}
+
+export interface CardOption {
+  name: string; issuer: string; card_type: string; annual_fee: string; joining_fee: string;
+  interest_rate: string; forex_fee: string; rewards: string; eligibility: string;
+  best_for: string; caution: string; source_url: string;
+}
+export async function getBankingOptions(purpose: string) {
+  return apiFetch<{ summary: string; affordability_note: string; options: CardOption[]; checked_at: string }>("/banking/options", { method: "POST", body: JSON.stringify({ purpose }) });
+}
+export async function planCommute(origin: string, destination: string, profile: string) {
+  return apiFetch<{ distance_m: number; duration_s: number; source: string; origin: { name: string; address: string }; destination: { name: string; address: string } }>("/routing/plan", { method: "POST", body: JSON.stringify({ origin, destination, profile }) });
 }

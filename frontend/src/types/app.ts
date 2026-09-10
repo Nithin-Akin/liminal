@@ -8,6 +8,7 @@ export interface UserProfile {
   city: string;
   locality: string;
   destination: string;
+  destinationAddress: string;
   monthlyBudget: number;
   housingStatus: string;
   bankStatus: string;

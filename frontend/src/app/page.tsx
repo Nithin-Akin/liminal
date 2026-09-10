@@ -15,7 +15,7 @@ export default function LandingPage() {
             agent, then builds a dashboard, plans, recommendations, and progress
             from that saved profile.
           </p>
-          <Link className="landing-cta" href="/onboarding">
+          <Link className="landing-cta" href="/login">
             Get started
           </Link>
         </div>
