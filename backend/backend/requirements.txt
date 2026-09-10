@@ -1,8 +1,10 @@
 fastapi
 uvicorn
-supabase
 anthropic
 openai
 python-dotenv
 pydantic
 groq
+sentence-transformers
+httpx
+pytest

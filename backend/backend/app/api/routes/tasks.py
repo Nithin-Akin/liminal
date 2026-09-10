@@ -2,31 +2,26 @@ import json
 from datetime import date
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-
 from app.db.local_store import read_json, write_json
+from app.core.auth import UserId
+from app.models.schemas import AgentTaskResponse, GenerateTasksRequest, TaskCompleteRequest
 from app.services.claude import generate
 
 router = APIRouter()
 
 
-class GenerateTasksRequest(BaseModel):
-    user_id: str = "demo-user"
-    force: bool = False
-    location: dict | None = None
-
-
 @router.post("/tasks/generate")
-def generate_tasks(body: GenerateTasksRequest):
+def generate_tasks(body: GenerateTasksRequest, user_id: str = UserId):
     profiles = read_json("profiles.json", {})
-    profile = profiles.get(body.user_id)
+    profile = profiles.get(user_id)
     if not profile:
         raise HTTPException(status_code=404, detail="No profile found. Complete onboarding first.")
 
     cache = read_json("generated_tasks.json", {})
-    if not body.force and cache.get(body.user_id):
-        payload = normalize_task_payload(cache[body.user_id], profile)
-        cache[body.user_id] = payload
+    if not body.force and cache.get(user_id):
+        payload = normalize_task_payload(cache[user_id], profile)
+        AgentTaskResponse.model_validate(payload)
+        cache[user_id] = payload
         write_json("generated_tasks.json", cache)
         return payload
 
@@ -38,15 +33,21 @@ def generate_tasks(body: GenerateTasksRequest):
         raise HTTPException(status_code=503, detail=f"Task agent failed: {exc}") from exc
 
     payload = normalize_task_payload(payload, profile)
+    try:
+        payload = AgentTaskResponse.model_validate(payload).model_dump()
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Task agent returned an invalid task shape") from exc
     payload["generated_at"] = str(date.today())
-    payload["user_id"] = body.user_id
-    cache[body.user_id] = payload
+    payload["user_id"] = user_id
+    cache[user_id] = payload
     write_json("generated_tasks.json", cache)
     return payload
 
 
 @router.get("/tasks/{user_id}")
-def get_tasks(user_id: str):
+def get_tasks(user_id: str, authenticated_user_id: str = UserId):
+    if user_id != authenticated_user_id:
+        raise HTTPException(status_code=403, detail="Cannot access another user's tasks")
     cache = read_json("generated_tasks.json", {})
     if not cache.get(user_id):
         raise HTTPException(status_code=404, detail="No generated tasks found. Run /tasks/generate first.")
@@ -58,9 +59,8 @@ def get_tasks(user_id: str):
 
 
 @router.post("/tasks/complete")
-def complete_task(body: dict):
-    user_id = body.get("user_id", "demo-user")
-    task_id = body.get("task_id")
+def complete_task(body: TaskCompleteRequest, user_id: str = UserId):
+    task_id = body.task_id
     rewards = read_json("rewards.json", {})
     current = rewards.get(user_id, {"points": 0, "streak": 0, "completed_tasks": 0, "level": "Operator I"})
     current["points"] = current.get("points", 0) + 40

@@ -1,26 +1,20 @@
 from datetime import date
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-
 from app.db.local_store import read_json, write_json
+from app.core.auth import UserId
+from app.models.schemas import AgentAnswer, AgentQuery
 from app.services.claude import generate
 
 router = APIRouter()
 
 
-class AgentQuery(BaseModel):
-    user_id: str = "demo-user"
-    question: str
-    location: dict | None = None
-
-
 @router.post("/agent/query")
-def query_agent(body: AgentQuery):
+def query_agent(body: AgentQuery, user_id: str = UserId):
     profiles = read_json("profiles.json", {})
     tasks = read_json("generated_tasks.json", {})
     rewards = read_json("rewards.json", {})
-    profile = profiles.get(body.user_id)
+    profile = profiles.get(user_id)
     if not profile:
         raise HTTPException(status_code=404, detail="No saved profile. Complete onboarding first.")
 
@@ -41,10 +35,10 @@ PROFILE:
 {profile}
 
 TASK_STATE:
-{tasks.get(body.user_id)}
+{tasks.get(user_id)}
 
 REWARDS:
-{rewards.get(body.user_id)}
+{rewards.get(user_id)}
 
 LOCATION:
 {body.location}
@@ -76,10 +70,14 @@ Return:
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"Agent query failed: {exc}") from exc
 
+    try:
+        validated = AgentAnswer.model_validate(parsed)
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail="Agent returned an invalid answer shape") from exc
     history = read_json("agent_history.json", {})
-    history.setdefault(body.user_id, []).append({"question": body.question, "answer": parsed, "created_at": str(date.today())})
+    history.setdefault(user_id, []).append({"question": body.question, "answer": validated.model_dump(), "created_at": str(date.today())})
     write_json("agent_history.json", history)
-    return parsed
+    return validated.model_dump()
 
 
 def parse_json(raw: str):

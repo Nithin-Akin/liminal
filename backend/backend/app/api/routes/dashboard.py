@@ -1,24 +1,24 @@
 from datetime import date
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
-from app.db.local_store import read_json
+from app.db.local_store import read_json, write_json
+from app.core.auth import UserId
+from app.core.phases import get_phase
 
 router = APIRouter()
 
-
-def phase_for_day(day_number: int):
-    if day_number <= 14:
-        return "Landing"
-    if day_number <= 35:
-        return "Reality"
-    if day_number <= 65:
-        return "Adjustment"
-    return "Emerging"
+class RewardRedemption(BaseModel):
+    title: str
+    points: int
 
 
 @router.get("/dashboard/{user_id}")
-def dashboard(user_id: str):
+def dashboard(user_id: str, authenticated_user_id: str = UserId):
+    if user_id != authenticated_user_id:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=403, detail="Cannot access another user's dashboard")
     # Local JSON files are the source of truth per spec. Supabase was previously
     # queried here too, but nothing in the app ever writes to that table (the
     # frontend never calls /transitions), so it always returned stale/hardcoded
@@ -28,7 +28,10 @@ def dashboard(user_id: str):
 
 
 @router.get("/rewards/{user_id}")
-def rewards(user_id: str):
+def rewards(user_id: str, authenticated_user_id: str = UserId):
+    if user_id != authenticated_user_id:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=403, detail="Cannot access another user's rewards")
     rewards_state = read_json("rewards.json", {})
     return rewards_state.get(user_id, {
         "user_id": user_id,
@@ -37,6 +40,20 @@ def rewards(user_id: str):
         "completed_tasks": 0,
         "level": "Operator I",
     })
+
+@router.post("/rewards/redeem")
+def redeem_reward(body: RewardRedemption, user_id: str = UserId):
+    if not body.title.strip() or body.points < 1:
+        raise HTTPException(status_code=422, detail="Reward title and positive point cost are required")
+    state = read_json("rewards.json", {})
+    current = state.get(user_id, {"user_id": user_id, "points": 0, "streak": 0, "completed_tasks": 0, "level": "Operator I"})
+    if body.points > current.get("points", 0):
+        raise HTTPException(status_code=400, detail="Not enough points for this reward")
+    current["points"] -= body.points
+    current.setdefault("redemptions", []).append({"title": body.title.strip(), "points": body.points, "status": "chosen"})
+    state[user_id] = current
+    write_json("rewards.json", state)
+    return {"redeemed": True, "rewards": current}
 
 
 def local_dashboard(user_id: str):
@@ -63,7 +80,7 @@ def local_dashboard(user_id: str):
         "transition": transition,
         "profile": profile,
         "day_number": day_number,
-        "phase": phase_for_day(day_number),
+        "phase": get_phase(day_number).name,
         "checkins": [],
         "setup_progress": {
             "completed": rewards_state.get(user_id, {}).get("completed_tasks", 0),

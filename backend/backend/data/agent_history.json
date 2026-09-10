@@ -203,5 +203,210 @@
       },
       "created_at": "2026-07-25"
     }
+  ],
+  "nithinios16@gmail.com": [
+    {
+      "question": "Build a mental-load support plan for a traveller who just moved. Stress: High. Sleep: Broken. Note: trying to finish my project. Format practical steps, reduce decision load, include when to seek human/professional help, and connect it to relocation tasks.",
+      "answer": {
+        "title": "Mental Load Support Plan",
+        "summary": "Prioritize sleep, simplify tasks, and seek help when needed to manage stress during relocation",
+        "plan": [
+          "Establish a consistent sleep schedule to improve the quality of rest",
+          "Break down the project into smaller, manageable tasks to reduce decision load and increase productivity",
+          "Schedule regular breaks to relax and recharge, considering local parks or recreational areas in Bangalore"
+        ],
+        "recommendations": [
+          {
+            "name": "Mindfulness and meditation apps",
+            "comparison": {
+              "field": "user reviews",
+              "value": "4.5+ stars"
+            },
+            "source_url": "https://www.google.com/search?q=mindfulness+and+meditation+apps",
+            "source_type": "search-required",
+            "fit_reason": "Accessible stress reduction tools"
+          },
+          {
+            "name": "Local counseling services",
+            "comparison": {
+              "field": "expertise",
+              "value": "stress management, relocation adjustment"
+            },
+            "source_url": "https://www.google.com/search?q=counseling+services+in+Bangalore",
+            "source_type": "search-required",
+            "fit_reason": "Professional help for severe stress or persistent issues"
+          },
+          {
+            "name": "Christ University support groups",
+            "comparison": {
+              "field": "peer support",
+              "value": "student community"
+            },
+            "source_url": "https://www.christuniversity.in/student-support",
+            "source_type": "official",
+            "fit_reason": "University resources for students"
+          }
+        ],
+        "next_action": "Download a mindfulness and meditation app to start practicing relaxation techniques",
+        "last_checked": "2026-07-25"
+      },
+      "created_at": "2026-07-25"
+    },
+    {
+      "question": "Build a mental-load support plan for a traveller who just moved. Stress: High. Sleep: Broken. Note: girl left me . Format practical steps, reduce decision load, include when to seek human/professional help, and connect it to relocation tasks.",
+      "answer": {
+        "title": "Mental Load Support Plan",
+        "summary": "Practical steps to manage high stress, broken sleep, and emotional distress after a move and a breakup, connecting to relocation tasks",
+        "plan": [
+          "Establish a daily routine to provide a sense of control and normalcy",
+          "Prioritize sleep by creating a sleep-conducive environment and avoiding screens before bedtime",
+          "Engage in physical activity like walking or yoga to reduce stress and improve mood"
+        ],
+        "recommendations": [
+          {
+            "name": "Counseling Services",
+            "comparison": {
+              "field": "specialization in relocation stress and relationships"
+            },
+            "source_url": "https://www.google.com/search?q=counseling+services+in+Bangalore",
+            "source_type": "search-required",
+            "fit_reason": "Professional help for coping with breakup and relocation stress"
+          },
+          {
+            "name": "Local Support Groups",
+            "comparison": {
+              "field": "focus on mental health and wellness"
+            },
+            "source_url": "https://www.google.com/search?q=mental+health+support+groups+in+Bangalore",
+            "source_type": "search-required",
+            "fit_reason": "Community support for sharing experiences and advice"
+          },
+          {
+            "name": "Mindfulness and Meditation Apps",
+            "comparison": {
+              "field": "user reviews and ratings"
+            },
+            "source_url": "https://www.google.com/search?q=mindfulness+and+meditation+apps",
+            "source_type": "search-required",
+            "fit_reason": "Accessible tools for managing stress and improving sleep"
+          }
+        ],
+        "next_action": "Download a mindfulness app and commit to a 10-minute daily meditation practice",
+        "last_checked": "2026-07-25"
+      },
+      "created_at": "2026-07-25"
+    },
+    {
+      "question": "Build a mental-load support plan for a traveller who just moved. Stress: High. Sleep: Broken. Note: got into an accident. Format practical steps, reduce decision load, include when to seek human/professional help, and connect it to relocation tasks.",
+      "answer": {
+        "title": "Mental Load Support Plan",
+        "summary": "Prioritized steps to manage high stress, broken sleep, and accident aftermath for a newly relocated individual, integrating relocation tasks",
+        "plan": [
+          "Establish a daily routine to regain control and consistency, starting with small, achievable tasks like unpacking essentials and setting up a comfortable sleeping space",
+          "Schedule regular breaks and time for self-care, such as meditation, reading, or short walks, to help manage stress and improve sleep quality",
+          "Connect with local support networks, such as university counseling services at Christ University or online communities, to share experiences and receive emotional support"
+        ],
+        "recommendations": [
+          {
+            "name": "Counseling Services at Christ University",
+            "comparison": {
+              "field": "confidentiality",
+              "value": "high"
+            },
+            "source_url": "https://www.google.com/search?q=Christ+University+counseling+services",
+            "source_type": "search-required",
+            "fit_reason": "Convenient location and specialized support for students"
+          },
+          {
+            "name": "Local Yoga or Meditation Classes",
+            "comparison": {
+              "field": "cost",
+              "value": "variable"
+            },
+            "source_url": "https://www.google.com/search?q=yoga+or+meditation+classes+near+Christ+University",
+            "source_type": "search-required",
+            "fit_reason": "Promotes relaxation and stress reduction"
+          }
+        ],
+        "next_action": "Reach out to Christ University counseling services to schedule an appointment and discuss accident-related stress and sleep issues",
+        "last_checked": "2026-07-25"
+      },
+      "created_at": "2026-07-25"
+    },
+    {
+      "question": "Find me a practical plan for housing and banking this week.",
+      "answer": {
+        "title": "Housing and Banking Plan",
+        "summary": "Research and shortlist housing options, and update banking information for a seamless transition to Bangalore",
+        "plan": [
+          "Research housing options in Bangalore, focusing on areas near Christ University",
+          "Shortlist 2-3 potential PGs that fit your monthly budget and preference for vegetarian food",
+          "Visit the shortlisted PGs and evaluate their amenities, safety, and commute time to Christ University"
+        ],
+        "recommendations": [
+          {
+            "name": "PG near Christ University",
+            "comparison": {
+              "price": "varies",
+              "location": "near university",
+              "size": "shared room",
+              "amenities": "wi-fi, kitchen"
+            },
+            "source_url": "https://www.google.com/search?q=housing+near+Christ+University+Bangalore",
+            "source_type": "search-required",
+            "fit_reason": "Convenient location and affordable option"
+          },
+          {
+            "name": "Update banking information with current bank",
+            "comparison": {
+              "fees": "low",
+              "interest rates": "competitive",
+              "branch locations": "multiple in Bangalore"
+            },
+            "source_url": "https://www.example.com/bank-website",
+            "source_type": "official",
+            "fit_reason": "Familiarity and existing account"
+          }
+        ],
+        "next_action": "Research and shortlist potential housing options using the Google search link provided",
+        "last_checked": "2026-07-25"
+      },
+      "created_at": "2026-07-25"
+    },
+    {
+      "question": "find me an indo chineese restaurant in koramangala",
+      "answer": {
+        "title": "Indo Chinese Restaurant in Koramangala",
+        "summary": "Find an Indo Chinese restaurant in Koramangala, Bangalore",
+        "plan": [
+          "Search for Indo Chinese restaurants in Koramangala",
+          "Check reviews and ratings",
+          "Visit the recommended restaurant"
+        ],
+        "recommendations": [
+          {
+            "name": "China Bowl",
+            "comparison": {
+              "field": "4.2/5 rating"
+            },
+            "source_url": "https://www.google.com/search?q=indo+chinese+restaurants+in+koramangala",
+            "source_type": "search-required",
+            "fit_reason": "Highly rated and nearby"
+          },
+          {
+            "name": "Mainland China",
+            "comparison": {
+              "field": "4.1/5 rating"
+            },
+            "source_url": "https://www.google.com/search?q=indo+chinese+restaurants+in+koramangala",
+            "source_type": "search-required",
+            "fit_reason": "Well-known chain and good reviews"
+          }
+        ],
+        "next_action": "Visit https://www.google.com/search?q=indo+chinese+restaurants+in+koramangala to find and compare Indo Chinese restaurants in Koramangala",
+        "last_checked": "2026-07-25"
+      },
+      "created_at": "2026-07-25"
+    }
   ]
 }

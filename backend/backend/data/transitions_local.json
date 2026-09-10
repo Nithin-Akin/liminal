@@ -1,25 +1,48 @@
 {
   "demo-user": {
     "type": "moving_city",
-    "day_1_date": "2026-07-24",
+    "day_1_date": "2026-08-18",
     "intake": {
-      "name": "Naveen ",
-      "ageRange": "18-24",
+      "name": "Nithin",
+      "ageRange": "25-34",
+      "genderContext": "",
+      "transitionType": "moving_city",
+      "city": "bvjksab",
+      "locality": "Urban",
+      "destination": "v sjhfa bears",
+      "monthlyBudget": 20000,
+      "housingStatus": "Need PG/coliving",
+      "bankStatus": "Need UPI/KYC help",
+      "simStatus": "Need better data plan",
+      "commuteMode": "Bike",
+      "foodPreference": "Vegan",
+      "safetyPriority": "High",
+      "supportLevel": "Low local network",
+      "dayOne": "2026-08-18",
+      "intakeNote": ""
+    }
+  },
+  "nithinios16@gmail.com": {
+    "type": "moving_city",
+    "day_1_date": "2026-09-10",
+    "intake": {
+      "name": "Nithin",
+      "ageRange": "25-34",
       "genderContext": "",
       "transitionType": "moving_city",
       "city": "Bangalore",
       "locality": "Urban",
       "destination": "Christ University",
-      "monthlyBudget": 10000,
-      "housingStatus": "Shortlisted PGs",
-      "bankStatus": "Need local account",
-      "simStatus": "SIM sorted",
-      "commuteMode": "Bike",
-      "foodPreference": "Vegetarian",
+      "monthlyBudget": 20000,
+      "housingStatus": "Need PG/coliving",
+      "bankStatus": "Need UPI/KYC help",
+      "simStatus": "Need new SIM",
+      "commuteMode": "Metro + walk",
+      "foodPreference": "Vegan",
       "safetyPriority": "Very high",
       "supportLevel": "Low local network",
-      "dayOne": "2026-07-24",
-      "intakeNote": ""
+      "dayOne": "2026-09-10",
+      "intakeNote": "I am a relatively focussed student so i need silence"
     }
   }
 }
