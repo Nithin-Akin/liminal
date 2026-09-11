@@ -31,14 +31,14 @@ def research(category: str, city: str, locality: str, destination: str, limit: i
     query_text = ", ".join(part for part in (destination, locality, city) if part)
     cache = read_json("open_data_cache.json", {})
     preferences = preferences or {}
-    cache_key = f"v3:{category}:{query_text.lower()}:{budget}:{housing_status.lower()}:{preferences}"
+    cache_key = f"v4:{category}:{query_text.lower()}:{budget}:{housing_status.lower()}:{preferences}"
     cached = cache.get(cache_key)
     if cached and time.time() - cached.get("cached_at_epoch", 0) < 3600:
         return cached["payload"]
 
     google = search_places(category, query_text, preferences)
     if google is not None:
-        payload = {"category": category, "query": query_text, "budget": budget, "preferences": preferences, "source": google["source"], "results": google["results"], "warning": (f"No Google Places matched '{google['search_query']}' as {google['place_type']}. Try a broader need or verify the destination address." if not google["results"] else "Ratings, reviews, price levels, and hours come from Google Places. Prices and availability still require verification.")}
+        payload = {"category": category, "query": query_text, "budget": budget, "preferences": preferences, "source": google["source"], "results": google["results"], "warning": google.get("warning") or (f"No Google Places matched '{google['search_query']}' as {google['place_type']}. Try a broader need or verify the destination address." if not google["results"] else "Ratings, reviews, price levels, and hours come from Google Places. Prices and availability still require verification.")}
         cache[cache_key] = {"cached_at_epoch": time.time(), "payload": payload}; write_json("open_data_cache.json", cache)
         return payload
 
