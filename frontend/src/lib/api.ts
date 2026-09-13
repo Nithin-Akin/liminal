@@ -175,7 +175,7 @@ export async function researchCategory(category: string, params: Record<string, 
 }
 
 export async function verifySource(url: string) {
-  return apiFetch<{ url: string; extraction: { facts: Record<string, string>; confidence: string } }>("/sources/verify", { method: "POST", body: JSON.stringify({ url }) });
+  return apiFetch<{ url: string; extraction: { facts: Record<string, string>; provenance: Record<string, { value: string; confidence: string; source: string }>; confidence: string } }>("/sources/verify", { method: "POST", body: JSON.stringify({ url }) });
 }
 
 export async function confirmSource(url: string, category: string, facts: Record<string, string>, confidence: string) {
