@@ -5,13 +5,15 @@ from fastapi import APIRouter, HTTPException
 from app.db.local_store import read_json, write_json
 from app.core.auth import UserId
 from app.models.schemas import AgentTaskResponse, GenerateTasksRequest, TaskCompleteRequest
-from app.services.claude import generate
+from app.services.ai_runtime import allow_ai_request, generate_validated
 
 router = APIRouter()
 
 
 @router.post("/tasks/generate")
 def generate_tasks(body: GenerateTasksRequest, user_id: str = UserId):
+    if not allow_ai_request(f"tasks:{user_id}"):
+        raise HTTPException(status_code=429, detail="Task generation rate limit reached. Try again shortly.")
     profiles = read_json("profiles.json", {})
     profile = profiles.get(user_id)
     if not profile:
@@ -27,16 +29,12 @@ def generate_tasks(body: GenerateTasksRequest, user_id: str = UserId):
 
     prompt = build_task_prompt(profile, body.location)
     try:
-        raw = generate(prompt)
-        payload = parse_json(raw)
+        payload = generate_validated(prompt, AgentTaskResponse).model_dump()
     except Exception as exc:
         raise HTTPException(status_code=503, detail=f"Task agent failed: {exc}") from exc
 
     payload = normalize_task_payload(payload, profile)
-    try:
-        payload = AgentTaskResponse.model_validate(payload).model_dump()
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail="Task agent returned an invalid task shape") from exc
+    payload = AgentTaskResponse.model_validate(payload).model_dump()
     payload["generated_at"] = str(date.today())
     payload["user_id"] = user_id
     cache[user_id] = payload
@@ -72,10 +70,18 @@ def complete_task(body: TaskCompleteRequest, user_id: str = UserId):
 
 
 def build_task_prompt(profile: dict, location: dict | None):
+    categories = [
+        ("housing", "housing agent: prioritize rent, deposit, room type, availability, commute, and source verification"),
+        ("bank", "banking agent: prioritize annual fee, joining fee, APR/interest, forex, eligibility, purpose fit, and official issuer sources"),
+        ("food", "food agent: prioritize dietary preference, cuisine, meal price evidence, hours, and distance"),
+        ("health", "healthcare agent: prioritize the requested service, provider type, hours, phone, location, and urgent-care caveats"),
+        ("sim", "connectivity agent: prioritize plan cost, data allowance, coverage, store location, and activation requirements"),
+    ]
     return f"""
 You are Liiminal's relocation task agent. Generate a practical action board for a person moving to a new city.
 
 STRICT RULES:
+- Act as a category specialist for each task: {categories}.
 - Return ONLY valid JSON. No markdown.
 - Do not hardcode generic advice.
 - Use the profile values to personalize every task.

@@ -2020,3 +2020,11 @@ select.input option {
 .graph-row > div { height: 12px; background: rgba(255,255,255,.1); border-radius: 999px; overflow: hidden; }
 .graph-row i { display: block; height: 100%; background: linear-gradient(90deg, #c7ff4a, #65e6ca); border-radius: inherit; }
 @media (max-width: 700px) { .graph-row { grid-template-columns: 1fr; gap: .35rem; } }
+.attention-section { margin-top: 30px; }
+.attention-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.attention-card { display: flex; align-items: flex-start; gap: 14px; padding: 22px; }
+.attention-mark { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; border: 1px solid rgba(199,255,74,.5); border-radius: 50%; color: #c7ff4a; font-weight: 700; }
+.attention-card h3 { margin: 0 0 8px; font-size: 18px; }
+.attention-card p { margin: 0 0 12px; }
+.text-link { color: #c7ff4a; font-size: 13px; text-decoration: none; }
+@media (max-width: 800px) { .attention-grid { grid-template-columns: 1fr; } }

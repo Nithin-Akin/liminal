@@ -52,7 +52,11 @@ def search_places(category: str, query: str, preferences: dict | None = None) ->
     except (httpx.HTTPError, ValueError) as exc:
         detail = "Google Places request failed. Check GOOGLE_MAPS_API_KEY, Places API (New), billing, and API restrictions."
         if isinstance(exc, httpx.HTTPStatusError):
-            detail = f"{detail} Google returned HTTP {exc.response.status_code}."
+            try:
+                provider_message = exc.response.json().get("error", {}).get("message", "")
+            except ValueError:
+                provider_message = ""
+            detail = f"{detail} Google returned HTTP {exc.response.status_code}: {provider_message[:300]}"
         return {"results": [], "source": "Google Places", "search_query": text_query, "place_type": type_name, "warning": detail}
 
     # A restrictive includedType can hide valid nearby businesses. Retry once

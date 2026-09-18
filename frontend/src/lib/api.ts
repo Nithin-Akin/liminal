@@ -85,6 +85,20 @@ export async function getDashboard() {
   return apiFetch<DashboardState>(`/dashboard/${getUserId()}`);
 }
 
+export interface RelocationPlan {
+  generated_at: string;
+  summary: string;
+  state: { budget: number | null; completed_tasks: number; total_tasks: number; verified_sources: number; recent_mood: number | null };
+  blockers: Array<{ title: string; impact: string; evidence: string }>;
+  risks: Array<{ title: string; impact: string; evidence: string }>;
+  recommendations: Array<{ option: string; score: number; reasons: string[]; tradeoffs: string[]; next_action: string }>;
+  next_actions: string[];
+}
+
+export async function getRelocationPlan() {
+  return apiFetch<RelocationPlan>("/plan");
+}
+
 export async function askAgent(question: string, location?: UserProfile["location"]) {
   return apiFetch<AgentAnswer>("/agent/query", {
     method: "POST",

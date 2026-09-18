@@ -26,3 +26,11 @@ def test_source_confirmation():
     response = client.post('/sources/confirm', headers=auth(), json={'url': 'https://example.com', 'category': 'housing', 'facts': {'rent': '₹12000'}, 'confidence': 'low'})
     assert response.status_code == 200
     assert response.json()['saved'] is True
+
+def test_relocation_plan_uses_saved_state():
+    response = client.get('/plan', headers=auth())
+    assert response.status_code == 200
+    payload = response.json()
+    assert 'next_actions' in payload
+    assert 'blockers' in payload
+    assert 'recommendations' in payload

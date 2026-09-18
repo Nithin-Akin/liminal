@@ -6,13 +6,16 @@ from app.core.auth import UserId
 from app.core.phases import get_phase
 from app.models.schemas import CheckinRequest
 from app.prompts.checkin import build_checkin_prompt
-from app.services.claude import generate
+from app.services.ai_runtime import allow_ai_request, generate_validated, log_sensitive_event
+from app.models.schemas import CheckinAgentResponse
 
 router = APIRouter()
 
 
 @router.post("/checkins")
 def create_checkin(body: CheckinRequest, user_id: str = UserId):
+    if not allow_ai_request(f"checkin:{user_id}"):
+        raise HTTPException(status_code=429, detail="Check-in rate limit reached. Try again shortly.")
     phase = get_phase(body.day_number)
     phase_name = phase.name
     prompt = build_checkin_prompt(
@@ -27,7 +30,7 @@ def create_checkin(body: CheckinRequest, user_id: str = UserId):
     )
 
     try:
-        response = generate(prompt)
+        agent_response = generate_validated(prompt, CheckinAgentResponse)
     except Exception as exc:
         raise HTTPException(
             status_code=503,
@@ -36,13 +39,18 @@ def create_checkin(body: CheckinRequest, user_id: str = UserId):
 
     payload = {
         "message": "check-in processed",
-        "response": response,
+        "response": agent_response.response,
+        "support_actions": agent_response.support_actions,
+        "risk_level": agent_response.risk_level,
+        "escalation": agent_response.escalation,
         "phase_name": phase_name,
         "day_number": body.day_number,
         "mood": body.mood,
         "note": body.note,
         "created_at": str(date.today()),
     }
+    if body.mood <= 2 or agent_response.risk_level in {"medium", "high"}:
+        log_sensitive_event(user_id, {"day_number": body.day_number, "mood": body.mood, "note": body.note, "risk_level": agent_response.risk_level, "response": agent_response.response})
     checkins = read_json("checkins.json", {})
     checkins.setdefault(user_id, []).append(payload)
     write_json("checkins.json", checkins)

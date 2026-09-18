@@ -31,7 +31,7 @@ def research(category: str, city: str, locality: str, destination: str, limit: i
     query_text = ", ".join(part for part in (destination, locality, city) if part)
     cache = read_json("open_data_cache.json", {})
     preferences = preferences or {}
-    cache_key = f"v4:{category}:{query_text.lower()}:{budget}:{housing_status.lower()}:{preferences}"
+    cache_key = f"v5:{category}:{query_text.lower()}:{budget}:{housing_status.lower()}:{preferences}"
     cached = cache.get(cache_key)
     if cached and time.time() - cached.get("cached_at_epoch", 0) < 3600:
         return cached["payload"]

@@ -44,6 +44,19 @@ class AgentAnswer(BaseModel):
     last_checked: str
 
 
+class RouterDecision(BaseModel):
+    intent: str
+    confidence: float = Field(ge=0, le=1)
+    reason: str
+
+
+class CheckinAgentResponse(BaseModel):
+    response: str
+    support_actions: list[str] = []
+    risk_level: str = "low"
+    escalation: str = "none"
+
+
 class TaskOption(BaseModel):
     name: str
     values: dict[str, str] = {}

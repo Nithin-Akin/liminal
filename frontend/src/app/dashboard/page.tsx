@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppChrome } from "@/components/AppChrome";
 import { AuthGate } from "@/components/AuthGate";
-import { getCheckinHistory, getDashboard, type DashboardState } from "@/lib/api";
+import { getCheckinHistory, getDashboard, getRelocationPlan, type DashboardState, type RelocationPlan } from "@/lib/api";
 import { phases } from "@/lib/profile";
 
 export default function DashboardPage() {
   const [dashboard, setDashboard] = useState<DashboardState | null>(null);
   const [status, setStatus] = useState("Loading agent dashboard...");
   const [moods, setMoods] = useState<Array<{ mood?: number; created_at?: string }>>([]);
+  const [plan, setPlan] = useState<RelocationPlan | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -19,6 +20,7 @@ export default function DashboardPage() {
         setDashboard(payload);
         setStatus("Fetched from agent state");
         getCheckinHistory().then((history) => setMoods(history.entries.slice(-7))).catch(() => undefined);
+        getRelocationPlan().then(setPlan).catch(() => undefined);
       } catch (error) {
         setStatus(error instanceof Error ? error.message : "Could not load dashboard.");
       }
@@ -47,6 +49,7 @@ export default function DashboardPage() {
         {dashboard && profile?.name ? (
           <>
           <p className="hero-copy compact-copy">Current blockers: {dashboard.pending_priority_areas.join(", ") || "none logged yet"}. Setup is {progress}% complete from saved task and reward state.</p>
+          {plan ? <section className="attention-section"><div className="kicker">Needs high attention</div><div className="attention-grid">{[...plan.blockers, ...plan.risks].filter((item) => item.impact === "high").slice(0, 3).map((item, index) => <article className="template-card attention-card" key={`${item.title}-${index}`}><div className="attention-mark">!</div><div><h3>{item.title}</h3><p className="source">{item.evidence}</p><Link className="text-link" href={item.title.toLowerCase().includes("housing") ? "/research/housing" : item.title.toLowerCase().includes("bank") ? "/banking" : "/tasks"}>Open next step →</Link></div></article>)}{![...plan.blockers, ...plan.risks].some((item) => item.impact === "high") ? <article className="template-card attention-card"><div className="attention-mark">✓</div><div><h3>No urgent blockers</h3><p className="source">Your saved relocation state is currently within plan.</p></div></article> : null}</div></section> : null}
           {profile.monthlyBudget < 15000 ? <div className="budget-alert"><strong>Budget check:</strong> Your monthly budget is ₹{profile.monthlyBudget.toLocaleString()}. Avoid using credit to cover recurring housing costs unless repayment is already certain; first compare lower-cost options and total move-in costs.</div> : null}
           <div className="progress-strip">
             <span>Profile</span><b style={{ width: "100%" }} />

@@ -11,6 +11,7 @@ from app.api.routes import research
 from app.api.routes import sources
 from app.api.routes import routing
 from app.api.routes import banking
+from app.api.routes import plan
 from app.core.config import DEV_AUTH
 
 app = FastAPI(title="Liminal API")
@@ -35,6 +36,7 @@ app.include_router(research.router)
 app.include_router(sources.router)
 app.include_router(routing.router)
 app.include_router(banking.router)
+app.include_router(plan.router)
 
 @app.get("/")
 def root():

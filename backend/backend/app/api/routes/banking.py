@@ -4,6 +4,8 @@ from pydantic import BaseModel, Field
 from app.core.auth import UserId
 from app.db.local_store import read_json
 from app.services.gemini import generate
+from app.services.local_llm import generate as generate_local
+from app.core.config import AI_PROVIDER
 
 router = APIRouter()
 
@@ -41,8 +43,8 @@ Compare 4 currently available Indian credit cards for purpose: {body.purpose}.
 User monthly budget: {budget}. User city: {profile.get('city','not provided')}.
 Use only facts you know with high confidence. Never invent a fee, rate, reward, or eligibility rule. If a field is not reliably known, write "Verify on issuer page". Every source_url must be the issuer's official product page, never Google search, a blog, or a fabricated URL. Explain affordability conservatively and say when a credit card is a poor choice for this budget. No markdown and no extra keys."""
     try:
-        raw = generate(prompt)
+        raw = generate_local(prompt) if AI_PROVIDER == "ollama" else generate(prompt)
         data = json.loads(raw[raw.find("{"):raw.rfind("}") + 1])
         return BankingResponse.model_validate(data)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail="Banking comparison unavailable. Check GEMINI_API_KEY and Gemini API access.") from exc
+        raise HTTPException(status_code=502, detail=f"Banking comparison unavailable: {str(exc)[:400]}") from exc

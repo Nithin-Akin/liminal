@@ -1,11 +1,14 @@
 from groq import Groq
 import time
-from app.core.config import GROQ_API_KEY
+from app.core.config import AI_PROVIDER, GROQ_API_KEY
 
 client = Groq(api_key=GROQ_API_KEY)
 MODEL = "llama-3.1-8b-instant"
 
 def generate(prompt: str) -> str:
+    if AI_PROVIDER == "ollama":
+        from app.services.local_llm import generate as local_generate
+        return local_generate(prompt)
     last_error = None
     for attempt in range(3):
         try:
@@ -17,6 +20,10 @@ def generate(prompt: str) -> str:
     raise last_error
 
 def stream(prompt: str):
+    if AI_PROVIDER == "ollama":
+        from app.services.local_llm import generate as local_generate
+        yield local_generate(prompt)
+        return
     response = client.chat.completions.create(
         model=MODEL,
         messages=[{"role": "user", "content": prompt}],
