@@ -1,9 +1,9 @@
 from groq import Groq
 import time
-from app.core.config import AI_PROVIDER, GROQ_API_KEY
+from app.core.config import AI_PROVIDER, GROQ_API_KEY, GROQ_MODEL
 
 client = Groq(api_key=GROQ_API_KEY)
-MODEL = "llama-3.1-8b-instant"
+MODEL = GROQ_MODEL
 
 def generate(prompt: str) -> str:
     if AI_PROVIDER == "ollama":
