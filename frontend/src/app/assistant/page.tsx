@@ -32,7 +32,7 @@ export default function AssistantPage() {
           <div className="template-card assistant-composer">
             <label className="field full">
               <span className="label">Question</span>
-              <textarea className="input" value={question} onChange={(event) => setQuestion(event.target.value)} />
+              <textarea className="input" value={question} onChange={(event) => { setQuestion(event.target.value); setAnswer(null); setStatus("Ready to answer this question."); }} />
             </label>
             <div className="actions"><button className="btn primary" onClick={ask}>Ask agent</button><Link className="btn" href="/dashboard">Dashboard</Link></div>
             <p className="source">{status}</p>

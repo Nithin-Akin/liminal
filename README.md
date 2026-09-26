@@ -66,8 +66,13 @@ Create `backend/backend/.env` locally. Never commit this file or real API keys:
 
 ```env
 GOOGLE_MAPS_API_KEY=your_google_places_key
-GEMINI_API_KEY=your_gemini_key
-GEMINI_MODEL=gemini-2.0-flash
+GEMINI_API_KEY=optional_gemini_key
+GEMINI_MODEL=gemini-3.6-flash
+
+# Local AI provider used by default
+AI_PROVIDER=ollama
+OLLAMA_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=llama3.1:8b
 
 # Local development login only
 DEV_AUTH=true
